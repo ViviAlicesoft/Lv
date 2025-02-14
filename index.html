@@ -1,294 +1,144 @@
 <!DOCTYPE html>
-<htmL>
-    <head> 
-        <title>Lv</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
-        <style>
-* button{  all: unset; /* Resets all styles */
-    background: none; /* Removes background */
-    border: none; /* Removes border */
-    padding: 0; /* Removes padding */
-    font: inherit; /* Inherits font styles */
-    color: inherit; /* Inherits text color */
-    cursor: pointer; /* Keeps the pointer cursor */}
-
-        body,html{height:100%; margin:0;}
-        body{background-image:url("bg.jpg");background-repeat:no-repeat; background-size:cover; }
-
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
-
-
-
-#shuffleBtn {
-    opacity: 0.5;
-    transition: opacity 0.3s ease;
-}
-#shuffleBtn.active {
-    opacity: 1;
-}
-
-
-        #background{position:fixed;width:100%;height:100%;z-index:0; pointer-events:none; opacity:0.2}
-                    
-       .assets{height:100vh;display:grid;grid-template-columns:10% 10% 10% 10% 10%; grid-template-rows: 40% 5% 20% 35%;  
-                justify-content:center;justify-items:center; align-items:center; gap:1cm;}
-
-        .assets img{height:50px; width:50px;}
-
-        .box{height:80%; width:30%;border-radius:40px; border:grey solid 4px; grid-column:span 6; align-self:end;}
-        .box img{height:100%; width:100%;border-radius:36px;}
-
-        #songtitle{align-self:end; grid-column:span 6; font-size:28px;  font-family: "Special Elite", serif;
-  font-weight: 400;
-  font-style: normal;
-                  color:white;}
-
-        .bar{height: 15px; width:90%;border-radius:30px;border:darkgrey solid 3px; background-color:lightgrey; grid-column:span 6; align-self:end;}
-.progress {
-    height: 100%;
-    width: 0%; /* Start at 0% */
-    background-color:grey;
-    border-radius: 20px;
-    transition: width 0.2s ease;
-}
-
-
-.time-bar {
-    display: flex;
-    width: 90%;
-    justify-content: space-between;
-    align-items: center;
-    grid-column: span 6; /* Span across the grid */
-    align-self: end;
-
-      font-family: "Special Elite", serif;
-  font-weight: 400;
-  font-style: normal;
-    font-size:20px;
-    color:white;
-}
-
-
-
-        .assets button{align-self:start;}
-
-        #muse{display:none}
-        </style>
-
-    </head>
-
-    <body>
-
-        
-
-        
-<div class="assets">
-
-<div class="box">
-<img id="thumbnail" src="d.jpeg" alt="">
-</div>
-
-<p id="songtitle">. . . No song playing . . .</p>
-
-
-<div class="time-bar">
-    <span id="current-time">0:00</span>
-    <div class="bar">
-        <div class="progress"></div>
-    </div>
-    <span id="end-time">0:00</span>
-</div>
-
-
-<button>
-<img src="like.png"alt="" class="sw">
-</button>
-
-<button id="previoussong" onclick="selectlast()">
-<img src="prev.png" alt="" class="sw">
-</button>
-
-<button id="pauseNplay" onclick="toggleaudio()">
-<img id="toggler" src="play.png" alt="" class="sw">
-</button>
-
-<button id="nextsong" onclick="selectnext()">
-<img src="next.png" alt="" class="sw">
-</button>
-
-
-<button id="shuffleBtn" onclick="toggleShuffle()">
-    <img src="shuff.png" alt="" class="sw">
-</button>
-
-
-</div>
-
-<audio controls id="muse" onend="conti()">
-<source id="soundsource" src="song.mp3" type="audio/mp3">
-</audio>
-
-
-
-<script>
-    var songs = [
-        {name:"1 Bts - Spring day", file:"song.mp3", background: "bg.jpg" ,thumbnail:"d.jpeg"},
-        {name:"2 Anya Nami - Idea 22", file:"song1.mp3", background: "bg1.jpg" , thumbnail:"b.jpeg"},
-   
-        {name:"3 Bts - Butterfly", file:"song2.mp3", background: "bg2.png" ,thumbnail:"c.jpeg"},
-        {name:"4 Alex G - Treehouse", file:"song3.mp3", background: "bg3.jpg" , thumbnail:"a.jpeg"},
-
-        {name:"5 Girl in red - we fell in love in october", file:"song4.mp3", background: "bg4.jpg" ,thumbnail:"e.jpeg"},
-        {name:"6 Artic monkeys - I wanna be yours", file:"song5.mp3", background: "bg5.jpg" , thumbnail:"f.jpeg"},
-
-        {name:"7 Bts - Permission to dance", file:"song6.mp3", background: "bg6.jpg" ,thumbnail:"g.jpeg"},
-        {name:"8 Matt Maltese - As the world caves", file:"song7.mp3", background: "bg7.jpg" , thumbnail:"h.jpeg"},
-
-
-        {name:"9 Steve Lacy - Dark Red", file:"song8.mp3", background: "bg8.jpg" ,thumbnail:"i.jpeg"},
-        {name:"10 The weekend - Die for you", file:"song9.mp3", background: "bg9.jpg" , thumbnail:"j.jpeg"},
-   
-        {name:"11 Bts - Wings", file:"song10.mp3", background: "bg10.jpg" ,thumbnail:"k.jpeg"},
-        {name:"12 Bts - Black Swan", file:"song11.mp3", background: "bg11.jpg" , thumbnail:"l.jpeg"},
-
-        {name:"13 Bts - Euphoria", file:"song12.mp3", background: "bg12.jpg" ,thumbnail:"m.jpeg"},
-        {name:"14 Migule - Adore ", file:"song13.mp3", background: "bg13.png" , thumbnail:"n.jpeg"},
-
-        {name:"15 Bts - Converse High", file:"song14.mp3", background: "bg14.jpg" ,thumbnail:"o.jpeg"},
-        {name:"16 Love of my life - Brian McKnight", file:"song15.mp3", background: "bg15.png" , thumbnail:"P.jpeg"},
-
-    ];
-
-var songindex = 0;
-
-var isShuffle = false;
-    
-var player = document.getElementById('muse');
-var audiocheck = document.getElementById('pauseNplay');
-var alttoggleimage = document.getElementById('toggler');
-var nail = document.getElementById('thumbnail');
-var songname = document.getElementById('songtitle');
-var soundsource = document.getElementById('soundsource');
-var thumbnail = document.getElementById('thumbnail')
-
-    // Get the progress bar element
-var progressBar = document.querySelector('.progress');
-
-    player.addEventListener('timeupdate', function() {
-    var percentage = (player.currentTime / player.duration) * 100;
-    progressBar.style.width = percentage + "%";
-});
-
-  // Get the parent bar
-var barContainer = document.querySelector('.bar');  
-
-barContainer.addEventListener('click', function(e) {
-    var clickPosition = e.offsetX;
-    var totalWidth = barContainer.offsetWidth;
-    var clickPercentage = clickPosition / totalWidth;
-    player.currentTime = clickPercentage * player.duration;
-});
-
-// Get the time elements
-var currentTimeDisplay = document.getElementById('current-time');
-var endTimeDisplay = document.getElementById('end-time');
-
-// Function to format time as minutes:seconds
-function formatTime(seconds) {
-    var minutes = Math.floor(seconds / 60);
-    var secs = Math.floor(seconds % 60);
-    if (secs < 10) secs = "0" + secs; // Pad single digit seconds with a 0
-    return minutes + ":" + secs;
-}
-
-// Update current time as the song plays
-player.addEventListener('timeupdate', function() {
-    currentTimeDisplay.textContent = formatTime(player.currentTime);
-});
-
-// Update end time when the song is loaded
-player.addEventListener('loadedmetadata', function() {
-    endTimeDisplay.textContent = formatTime(player.duration);
-});
-
-
-function toggleShuffle() {
-    isShuffle = !isShuffle;
-    var shuffleBtn = document.getElementById('shuffleBtn');
-    if (isShuffle) {
-        shuffleBtn.style.opacity = "1"; // Highlight button when shuffle is on
- shuffleBtn.classList.add('active');
-    } else {
-        shuffleBtn.style.opacity = "0.5"; // Dim button when shuffle is off
-        shuffleBtn.classList.remove('active');
-    }
-}
-function getRandomSongIndex() {
-    var nextIndex;
-    do {
-        nextIndex = Math.floor(Math.random() * songs.length);
-    } while (nextIndex === songindex); // Ensure it's not the same song
-    return nextIndex;
-}
-
-
-
-       function loadSong() {
-           soundsource.src = songs[songindex].file;
-            player.load(); // Reload the audio element to apply the new source
-            songname.textContent = "Now Playing: " + songs[songindex].name;
-
-            document.body.style.backgroundImage = "url('" + songs[songindex].background + "')"; 
-           // Update the thumbnail image
-            thumbnail.src = songs[songindex].thumbnail;
-
+<html>
+<head>
+    <title>Lv</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        * button {  
+            all: unset;
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
         }
 
-function toggleaudio() {
-            if (player.paused) {
-                player.play();
-                alttoggleimage.src = "pause.png";
+        body, html { height: 100%; margin: 0; }
+        body { background-image: url("bg.jpg"); background-repeat: no-repeat; background-size: cover; }
 
-            } else {
-                player.pause();
-                alttoggleimage.src = "play.png";
+        #shuffleBtn {
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        #shuffleBtn.active {
+            opacity: 1;
+        }
+
+        .assets {
+            height: 100vh;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: 40% 5% 20% 35%;
+            justify-content: center;
+            justify-items: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .assets img { height: 50px; width: 50px; }
+
+        .box {
+            height: 80%;
+            width: 30%;
+            border-radius: 40px;
+            border: grey solid 4px;
+            grid-column: span 6;
+            align-self: end;
+        }
+        .box img {
+            height: 100%;
+            width: 100%;
+            border-radius: 36px;
+        }
+
+        #songtitle {
+            align-self: end;
+            grid-column: span 6;
+            font-size: 28px;
+            font-family: 'Special Elite', serif;
+            color: white;
+        }
+
+        .bar {
+            height: 15px;
+            width: 90%;
+            border-radius: 30px;
+            border: darkgrey solid 3px;
+            background-color: lightgrey;
+            grid-column: span 6;
+            align-self: end;
+        }
+        .progress {
+            height: 100%;
+            width: 0%;
+            background-color: grey;
+            border-radius: 20px;
+            transition: width 0.2s ease;
+        }
+
+        .time-bar {
+            display: flex;
+            width: 90%;
+            justify-content: space-between;
+            align-items: center;
+            grid-column: span 6;
+            align-self: end;
+            font-family: 'Special Elite', serif;
+            font-size: 20px;
+            color: white;
+        }
+
+        .assets button img {
+            width: 40px;
+            height: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .assets {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+            .box {
+                width: 80%;
+                height: 50%;
+            }
+            .box img {
+                height: auto;
+                width: 100%;
+            }
+            .time-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+            #songtitle {
+                font-size: 20px;
             }
         }
-
-      
-// Function to go to the next song
-function selectnext() {
-    if (isShuffle) {
-        songindex = getRandomSongIndex();
-    } else {
-        songindex = (songindex + 1) % songs.length; // Loop back to first song
-    }
-    loadSong();
-    player.play();
-    alttoggleimage.src = "pause.png"; // Ensure button shows pause icon when playing
-}
-
-
-        // Function to go to the previous song
-        function selectlast() {
-            songindex = (songindex - 1 + songs.length) % songs.length; // Loop back to last song
-            loadSong();
-            player.play();
-            alttoggleimage.src = "pause.png"; // Ensure button shows pause icon when playing
-        }
-
-        // Initialize the first song when the page loads
-        loadSong();
-player.addEventListener('ended', function() {
-    selectnext(); // Automatically play the next song
-});
-
-</script>
-
-
-
-        </body>
-        </html>
+    </style>
+</head>
+<body>
+    <div class="assets">
+        <div class="box">
+            <img id="thumbnail" src="d.jpeg" alt="">
+        </div>
+        <p id="songtitle">. . . No song playing . . .</p>
+        <div class="time-bar">
+            <span id="current-time">0:00</span>
+            <div class="bar">
+                <div class="progress"></div>
+            </div>
+            <span id="end-time">0:00</span>
+        </div>
+        <button><img src="like.png" alt="" class="sw"></button>
+        <button id="previoussong" onclick="selectlast()"><img src="prev.png" alt="" class="sw"></button>
+        <button id="pauseNplay" onclick="toggleaudio()"><img id="toggler" src="play.png" alt="" class="sw"></button>
+        <button id="nextsong" onclick="selectnext()"><img src="next.png" alt="" class="sw"></button>
+        <button id="shuffleBtn" onclick="toggleShuffle()"><img src="shuff.png" alt="" class="sw"></button>
+    </div>
+</body>
+</html>
 
